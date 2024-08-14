@@ -42,6 +42,16 @@ switch ($parts[0]) {
         $users = $dashboard->usersList();
         $categories = $dashboard->categoriesList();
         $books = $dashboard->booksList();
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') 
+        {
+            if(isset($_POST['book_title'])){
+                $result = $dashboard->addBook($_POST['book_title'], $_POST['book_category'], '', '', '', $_SESSION['user_id']);
+                $message = $result ? 'Book added successfully' : 'Failed to add book';
+            }else if(isset($_POST['category_name'])){
+                $result = $dashboard->addCategory($_POST['category_name']);
+                $message = $result === 'success' ? 'category berhasil ditambahkan ' : $result;
+            }
+        }
 
         require __DIR__ . "/views/$dashboard_page";
         break;

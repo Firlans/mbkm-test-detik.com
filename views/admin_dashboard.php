@@ -38,6 +38,10 @@
                             <th>Actions</th>
                         </tr>
                     </thead>
+                    <?php if (isset($message)) : ?>
+                        <p class='message'><?= $message ?></p>
+                    <?php endif ?>
+
                     <tbody>
                         <?php if (isset($books)) : ?>
                             <?php foreach ($books as $book) : ?>
@@ -126,7 +130,7 @@
                 <div class="modal-content">
                     <span class="close">&times;</span>
                     <h2>Add New Book</h2>
-                    <form id="addBookForm" action="/dashboard" method="post" enctype="multipart/form-data">
+                    <form id="addBookForm" action="/dashboard" method="post" enctype="multipart/form-data"">
                         <div class="form-group">
                             <label for="book_title">Title:</label>
                             <input type="text" id="book_title" name="book_title" required>
@@ -141,7 +145,7 @@
                                 <?php endif ?>
                             </select>
                         </div>
-                        <!-- <div class="form-group">
+                        <div class="form-group">
                             <label for="book_description">Description:</label>
                             <textarea id="book_description" name="book_description" required></textarea>
                         </div>
@@ -152,7 +156,7 @@
                         <div class="form-group">
                             <label for="book_cover">Cover Image:</label>
                             <input type="file" id="book_cover" name="book_cover">
-                        </div> -->
+                        </div>
                         <button type="submit" class="submit-btn">Add Book</button>
                     </form>
                 </div>
