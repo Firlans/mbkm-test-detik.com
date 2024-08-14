@@ -141,7 +141,7 @@
                                 <?php endif ?>
                             </select>
                         </div>
-                        <div class="form-group">
+                        <!-- <div class="form-group">
                             <label for="book_description">Description:</label>
                             <textarea id="book_description" name="book_description" required></textarea>
                         </div>
@@ -152,7 +152,7 @@
                         <div class="form-group">
                             <label for="book_cover">Cover Image:</label>
                             <input type="file" id="book_cover" name="book_cover">
-                        </div>
+                        </div> -->
                         <button type="submit" class="submit-btn">Add Book</button>
                     </form>
                 </div>
@@ -162,7 +162,7 @@
                 <div class="modal-content">
                     <span class="close">&times;</span>
                     <h2>Add New Category</h2>
-                    <form id="addCategoryForm" action="/dashboard" method="post" onsubmit="alert('<?php $message ?>')">
+                    <form id="addCategoryForm" action="/dashboard" method="post"">
                         <div class="form-group">
                             <label for="category_name">Category Name:</label>
                             <input type="text" id="category_name" name="category_name" required>

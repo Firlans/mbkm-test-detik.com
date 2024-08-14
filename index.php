@@ -2,7 +2,6 @@
 session_start();
 require_once 'config/database.php';
 
-// $request = $_SERVER['REQUEST_URI'];
 $request = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 $parts = explode('/', trim($request, '/'));
 
@@ -17,7 +16,7 @@ switch ($parts[0]) {
             $is_login = $login->login($_POST['email'], $_POST['password']);
             if ($is_login !== 'success') {
                 $message = $is_login;
-            }else{
+            } else {
                 header(('Location: /dashboard'));
             }
         }
@@ -40,15 +39,18 @@ switch ($parts[0]) {
         $dashboard = new DashboardController($conn);
         $is_admin = $dashboard->is_admin($_SESSION['user_id']);
         $dashboard_page = $is_admin ? 'admin_dashboard.php' : 'user_dashboard.php';
-
-        if (isset($_SERVER['REQUEST_METHOD'])) {
-            if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-                $result = $dashboard->addCategory($_POST['category_name']);
-                $message = $result === 'success' ? 'Category berhasil ditambahkan' : $result;
-            }
-        }
+        $users = $dashboard->usersList();
+        $categories = $dashboard->categoriesList();
+        $books = $dashboard->booksList();
 
         require __DIR__ . "/views/$dashboard_page";
+        break;
+
+    case 'logout':
+        require __DIR__ . '/controllers/LoginController.php';
+        $logout = new LoginController($conn);
+        $logout->logout();
+        header('Location: /login');
         break;
 
     default:
