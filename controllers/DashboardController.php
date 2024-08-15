@@ -39,8 +39,14 @@ class DashboardController{
     }
 
     public function addBook($title, $category_id, $description, $file, $cover_image, $user_id){
+        if(!$title || !$category_id || !$description || !$file || !$cover_image || !$user_id){
+            return 'semua field wajib di isi';
+        }
+
+        $file_path = '';
+        $cover_image_path = '';
         
-        $this->bookModel->createBook($title, $category_id, $description, $file, $cover_image, $user_id);
+        $this->bookModel->createBook($title, $category_id, $description, $file_path, $cover_image_path, $user_id);
     }   
 
     public function usersList(){

@@ -10,6 +10,9 @@ switch ($parts[0]) {
         require __DIR__ . '/views/home.php';
         break;
     case 'login':
+        if (isset($_SESSION['user_id'])) {
+            header('Location: /dashboard');
+        }
         require __DIR__ . '/controllers/LoginController.php';
         $login = new LoginController($conn);
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -42,14 +45,25 @@ switch ($parts[0]) {
         $users = $dashboard->usersList();
         $categories = $dashboard->categoriesList();
         $books = $dashboard->booksList();
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') 
-        {
-            if(isset($_POST['book_title'])){
-                $result = $dashboard->addBook($_POST['book_title'], $_POST['book_category'], '', '', '', $_SESSION['user_id']);
-                $message = $result ? 'Book added successfully' : 'Failed to add book';
-            }else if(isset($_POST['category_name'])){
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            if (isset($_POST['book_title'])) {
+                $targetDir = 'uploads/';
+                $result = $dashboard->addBook($_POST['book_title'], $_POST['book_category'], $_POST['book_description'], $_FILES['book_file'], $_FILES['book_cover'], $_SESSION['user_id']);
+                if ($result === 'success') {
+                    $message = 'berhasil di tambahkan';
+                    $books = $dashboard->booksList();
+                } else {
+                    $error = $result;
+                }
+            }
+            if (isset($_POST['category_name'])) {
                 $result = $dashboard->addCategory($_POST['category_name']);
-                $message = $result === 'success' ? 'category berhasil ditambahkan ' : $result;
+                if ($result === 'success') {
+                    $message = 'category berhasil ditambahkan ';
+                    $categories = $dashboard->categoriesList();
+                } else {
+                    $error = $result;
+                }
             }
         }
 

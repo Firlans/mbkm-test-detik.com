@@ -50,14 +50,14 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
-    // Handling form submissions
+    // // Handling form submissions
     // const forms = document.querySelectorAll('form');
     // forms.forEach(form => {
     //     form.addEventListener('submit', (e) => {
-    //         e.preventDefault();
+    //         // e.preventDefault();
     //         // Here you would typically send the form data to the server
     //         // and handle the response
-    //         console.log('Form submitted:', form.id);
+    //         // console.log('Form submitted:', form.id);
     //         closeModal(form.closest('.modal'));
     //     });
     // });

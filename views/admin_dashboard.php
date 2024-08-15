@@ -10,7 +10,14 @@
 </head>
 
 <body>
+
+
     <div class="container">
+        <?php if (isset($message)) : ?>
+            <p class='message'><?= $message ?></p>
+        <?php elseif (isset($error)) : ?>
+            <p class='error'><?= $error ?></p>
+        <?php endif ?>
         <header>
             <h1>Digital Library Admin Dashboard</h1>
             <nav>
@@ -22,7 +29,6 @@
                 </ul>
             </nav>
         </header>
-
         <main>
             <section id="books">
                 <h2>Book Management</h2>
@@ -38,9 +44,6 @@
                             <th>Actions</th>
                         </tr>
                     </thead>
-                    <?php if (isset($message)) : ?>
-                        <p class='message'><?= $message ?></p>
-                    <?php endif ?>
 
                     <tbody>
                         <?php if (isset($books)) : ?>
@@ -131,38 +134,124 @@
                     <span class="close">&times;</span>
                     <h2>Add New Book</h2>
                     <form id="addBookForm" action="/dashboard" method="post" enctype="multipart/form-data"">
-                        <div class="form-group">
-                            <label for="book_title">Title:</label>
-                            <input type="text" id="book_title" name="book_title" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="book_category">Category:</label>
-                            <select id="book_category" name="book_category" required>
-                                <?php if (isset($categories)) : ?>
-                                    <?php foreach ($categories as $category) : ?>
-                                        <option value="<?= $category['id'] ?>"><?= $category['category_name'] ?></option>
-                                    <?php endforeach ?>
-                                <?php endif ?>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="book_description">Description:</label>
-                            <textarea id="book_description" name="book_description" required></textarea>
-                        </div>
-                        <div class="form-group">
-                            <label for="book_file">File:</label>
-                            <input type="file" id="book_file" name="book_file">
-                        </div>
-                        <div class="form-group">
-                            <label for="book_cover">Cover Image:</label>
-                            <input type="file" id="book_cover" name="book_cover">
-                        </div>
-                        <button type="submit" class="submit-btn">Add Book</button>
-                    </form>
+                        <div class=" form-group">
+                        <label for="book_title">Title:</label>
+                        <input type="text" id="book_title" name="book_title" required>
                 </div>
+                <div class="form-group">
+                    <label for="book_category">Category:</label>
+                    <select id="book_category" name="book_category" required>
+                        <?php if (isset($categories)) : ?>
+                            <?php foreach ($categories as $category) : ?>
+                                <option value="<?= $category['id'] ?>"><?= $category['category_name'] ?></option>
+                            <?php endforeach ?>
+                        <?php endif ?>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="book_description">Description:</label>
+                    <textarea id="book_description" name="book_description" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="book_file">File:</label>
+                    <input type="file" id="book_file" name="book_file">
+                </div>
+                <div class="form-group">
+                    <label for="book_cover">Cover Image:</label>
+                    <input type="file" id="book_cover" name="book_cover">
+                </div>
+                <button type="submit" class="submit-btn">Add Book</button>
+                </form>
             </div>
+    </div>
 
-        </main>
+    <div id="categoryModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Add New Category</h2>
+            <form id="addCategoryForm" action="/dashboard" method="post"">
+                <div class=" form-group">
+                <label for="category_name">Category Name:</label>
+                <input type="text" id="category_name" name="category_name" required>
+        </div>
+        <button type="submit" class="submit-btn">Add Category</button>
+        </form>
+    </div>
+    </div>
+
+    <div id="userModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Add New User</h2>
+            <form id="addUserForm" action="/dashboard" method="post">
+                <div class="form-group">
+                    <label for="user_name">Username:</label>
+                    <input type="text" id="user_name" name="user_name" required>
+                </div>
+                <div class="form-group">
+                    <label for="user_email">Email:</label>
+                    <input type="email" id="user_email" name="user_email" required>
+                </div>
+                <div class="form-group">
+                    <label for="user_password">Password:</label>
+                    <input type="password" id="user_password" name="user_password" required>
+                </div>
+                <div class="form-group">
+                    <label for="user_role">Role:</label>
+                    <select id="user_role" name="user_role" required>
+                        <option value="user">User</option>
+                        <option value="admin">Admin</option>
+                    </select>
+                </div>
+                <button type="submit" class="submit-btn">Add User</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Edit modals -->
+    <div id="editBookModal" class="modal">
+        <!-- Similar to addBookForm, but with pre-filled data -->
+    </div>
+
+    <div id="editCategoryModal" class="modal">
+        <!-- Similar to addCategoryForm, but with pre-filled data -->
+    </div>
+
+    <div id="editUserModal" class="modal">
+        <!-- Similar to addUserForm, but with pre-filled data -->
+    </div>
+
+    <!-- Delete confirmation modals -->
+    <div id="deleteBookModal" class="modal">
+        <div class="modal-content">
+            <h2>Confirm Deletion</h2>
+            <p>Are you sure you want to delete this book?</p>
+            <button id="confirmDeleteBook" class="delete-btn">Delete</button>
+            <button class="cancel-btn">Cancel</button>
+        </div>
+    </div>
+
+    <div id="deleteCategoryModal" class="modal">
+        <div class="modal-content">
+            <h2>Confirm Deletion</h2>
+            <p>Are you sure you want to delete this category?</p>
+            <button id="confirmDeleteCategory" class="delete-btn">Delete</button>
+            <button class="cancel-btn">Cancel</button>
+        </div>
+    </div>
+
+    <div id="deleteUserModal" class="modal">
+        <div class="modal-content">
+            <h2>Confirm Deletion</h2>
+            <p>Are you sure you want to delete this user?</p>
+            <button id="confirmDeleteUser" class="delete-btn">Delete</button>
+            <button class="cancel-btn">Cancel</button>
+        </div>
+    </div>
+    </main>
+    </div>
+
+    </main>
     </div>
 
     <script src="../assets/javascript/dashboard.js"></script>
