@@ -1,5 +1,6 @@
 <?php
-class User{
+class User
+{
     private $conn;
 
     public function __construct($conn)
@@ -7,7 +8,8 @@ class User{
         $this->conn = $conn;
     }
 
-    public function getUsers(){
+    public function getUsers()
+    {
         $sql = 'SELECT * FROM users';
         $result = $this->conn->query($sql);
         $users = $result->fetch_all(MYSQLI_ASSOC);
@@ -16,7 +18,8 @@ class User{
         return $users;
     }
 
-    public function getUserByEmail($email){
+    public function getUserByEmail($email)
+    {
         $sql = 'SELECT * FROM users WHERE email = ?';
         $statement = $this->conn->prepare($sql);
         $statement->bind_param('s', $email);
@@ -26,8 +29,9 @@ class User{
         $statement->close();
         return $user;
     }
-    
-    public function getUserById($id){
+
+    public function getUserById($id)
+    {
         $sql = 'SELECT * FROM users WHERE id = ?';
         $statement = $this->conn->prepare($sql);
         $statement->bind_param('s', $id);
@@ -38,12 +42,23 @@ class User{
         return $user;
     }
 
-    public function createUser($username, $email, $password, $role){
+    public function deleteUser($id)
+    {
+        $sql = 'DELETE FROM users WHERE id = ?';
+        $statement = $this->conn->prepare($sql);
+        $statement->bind_param('s', $id);
+        $result = $statement->execute();
+        $statement->close();
+        return $result;
+    }
+
+    public function createUser($username, $email, $password, $role)
+    {
         $sql = 'INSERT INTO users (username, email, password, role) VALUES(?,?,?,?)';
         $statement = $this->conn->prepare($sql);
         $statement->bind_param('ssss', $username, $email, $password, $role);
         $result = $statement->execute();
         $statement->close();
-        return $result;        
+        return $result;
     }
 }

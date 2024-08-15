@@ -29,6 +29,7 @@ document.addEventListener('DOMContentLoaded', function () {
     deleteButtons.forEach(btn => {
         btn.addEventListener('click', () => {
             openModal(btn.dataset.modal);
+            document.getElementById(`${btn.dataset.modal.replace('delete', '').replace('Modal', '').toLowerCase()}_id`).value = btn.dataset.id;
             const confirmDeleteBtn = document.getElementById(`confirmDelete${btn.dataset.modal.replace('delete', '').replace('Modal', '')}`);
             confirmDeleteBtn.dataset.id = btn.dataset.id;
         });
@@ -66,8 +67,8 @@ document.addEventListener('DOMContentLoaded', function () {
     const confirmDeleteBtns = document.querySelectorAll('[id^="confirmDelete"]');
     confirmDeleteBtns.forEach(btn => {
         btn.addEventListener('click', () => {
-            const itemType = btn.id.replace('confirmDelete', '');
             const itemId = btn.dataset.id;
+            const itemType = btn.id.replace('confirmDelete', '');
             // Here you would typically send a delete request to the server
             console.log(`Deleting ${itemType} with id: ${itemId}`);
             closeModal(btn.closest('.modal'));

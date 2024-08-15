@@ -47,7 +47,6 @@ switch ($parts[0]) {
         $books = $dashboard->booksList();
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if (isset($_POST['book_title'])) {
-                $targetDir = 'uploads/';
                 $result = $dashboard->addBook($_POST['book_title'], $_POST['book_category'], $_POST['book_description'], $_FILES['book_file'], $_FILES['book_cover'], $_SESSION['user_id']);
                 if ($result === 'success') {
                     $message = 'berhasil di tambahkan';
@@ -60,6 +59,43 @@ switch ($parts[0]) {
                 $result = $dashboard->addCategory($_POST['category_name']);
                 if ($result === 'success') {
                     $message = 'category berhasil ditambahkan ';
+                    $categories = $dashboard->categoriesList();
+                } else {
+                    $error = $result;
+                }
+            }
+            if (isset($_POST['user_name'])) {
+                $result = $dashboard->addUser($_POST['user_name'], $_POST['user_email'], $_POST['user_password'], $_POST['user_role']);
+                if ($result === 'success') {
+                    $message = 'user berhasil ditambahkan ';
+                    $users = $dashboard->usersList();
+                } else {
+                    $error = $result;
+                }
+            }
+
+            if (isset($_POST['delete_user_id'])){
+                $result = $dashboard->deleteUser($_POST['delete_user_id']);
+                if ($result === 'success') {
+                    $message = 'user berhasil terhapus ';
+                    $users = $dashboard->usersList();
+                } else {
+                    $error = $result;
+                }
+            }
+            if (isset($_POST['delete_book_id'])){
+                $result = $dashboard->deleteBook($_POST['delete_book_id']);
+                if ($result === 'success') {
+                    $message = 'user berhasil terhapus ';
+                    $books = $dashboard->booksList();
+                } else {
+                    $error = $result;
+                }
+            }
+            if (isset($_POST['delete_category_id'])){
+                $result = $dashboard->deleteCategory($_POST['delete_category_id']);
+                if ($result === 'success') {
+                    $message = 'user berhasil terhapus ';
                     $categories = $dashboard->categoriesList();
                 } else {
                     $error = $result;

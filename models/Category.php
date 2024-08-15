@@ -1,5 +1,6 @@
 <?php
-class Category{
+class Category
+{
     private $conn;
 
     public function __construct($conn)
@@ -7,14 +8,16 @@ class Category{
         $this->conn = $conn;
     }
 
-    public function getCategories(){
+    public function getCategories()
+    {
         $sql = 'SELECT * FROM categories';
         $result = $this->conn->query($sql);
         $categories = $result->fetch_all(MYSQLI_ASSOC);
         $result->close();
         return $categories;
     }
-    public function getCategoryByName($category_name){
+    public function getCategoryByName($category_name)
+    {
         $sql = 'SELECT * FROM categories WHERE category_name = ?';
         $statement = $this->conn->prepare($sql);
         $statement->bind_param('s', $category_name);
@@ -25,10 +28,21 @@ class Category{
         return $category;
     }
 
-    public function createCategory($category_name){
+    public function createCategory($category_name)
+    {
         $sql = 'INSERT INTO categories (category_name) values (?)';
         $statement = $this->conn->prepare($sql);
         $statement->bind_param('s', $category_name);
+        $result = $statement->execute();
+        $statement->close();
+        return $result;
+    }
+
+    public function deleteCategory($id)
+    {
+        $sql = 'DELETE FROM categories WHERE id = ?';
+        $statement = $this->conn->prepare($sql);
+        $statement->bind_param('s', $id);
         $result = $statement->execute();
         $statement->close();
         return $result;
