@@ -12,6 +12,20 @@ class Category
     {
         $sql = 'SELECT * FROM categories';
         $result = $this->conn->query($sql);
+        if (!$result) {
+            if ($this->conn->error === "Table 'perpustakaan_digital.categories' doesn't exist") {
+                $this->conn->query("
+                    CREATE TABLE
+                        categories (
+                            id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+                            name VARCHAR(255) NOT NULL,
+                            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+                        );"
+                );
+            }
+            $result = $this->conn->query($sql);
+        }
         $categories = $result->fetch_all(MYSQLI_ASSOC);
         $result->close();
         return $categories;

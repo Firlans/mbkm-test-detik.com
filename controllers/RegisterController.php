@@ -17,15 +17,16 @@ class RegisterController{
         if($password !== $confirm_password){
             return 'confirm password tidak sesuai';
         }
-        if($this->userModel->getUserByEmail($email)){
-            return "email sudak digunakan, silakan login ke email $email";
+        $isAvailableEmail = $this->userModel->getUserByEmail($email);
+        if($isAvailableEmail){
+            return "email sudah digunakan, silakan login ke email $email";
         }
         $role = 'user';
         $isRegister = $this->userModel->createUser($username, $email, $password, $role);
-        if($isRegister){
-            return 'sukses';
+        if(!$isRegister){
+            return "terjadi, silakan coba lagi";
         }
-        return "terjadi, silakan coba lagi";
+        return 'sukses';
     }
 }
 ?>
