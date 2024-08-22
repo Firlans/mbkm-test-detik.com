@@ -40,12 +40,22 @@ class DashboardController{
 
     public function addBook($title, $category_id, $description, $file, $cover_image, $user_id){
         if(!$title || !$category_id || !$description || !$file || !$cover_image || !$user_id){
-            return 'semua field wajin diisi';
+            return 'semua field wajib diisi';
+        }
+        
+        $idSaveBook = $this->bookModel->saveBook($file, $cover_image);
+        if($idSaveBook !== 'success'){
+            return $idSaveBook;
         }
 
-        
+        $file_path = 'uploads/pdf/'.$file['name'];
+        $cover_path = 'uploads/pdf/'.$cover_image['name'];
 
-        $this->bookModel->createBook($title, $category_id, $description, $file, $cover_image, $user_id);
+
+        if(!$this->bookModel->createBook($title, $category_id, $description, $file_path, $cover_path, $user_id)){
+            return 'terjadi kesalahan, silahkan coba lagi nanti';
+        }
+        return 'success';
     }   
 
     public function usersList(){

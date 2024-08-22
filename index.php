@@ -45,8 +45,8 @@ switch ($parts[0]) {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') 
         {
             if(isset($_POST['book_title'])){
-                $result = $dashboard->addBook($_POST['book_title'], $_POST['book_category'], '', '', '', $_SESSION['user_id']);
-                $message = $result === 'success' ? 'Buku berhasil ditambahkan' : 'Failed to add book';
+                $result = $dashboard->addBook($_POST['book_title'], $_POST['book_category'], $_POST['book_description'], $_FILES['book_file'], $_FILES['book_cover'], $_SESSION['user_id']);
+                $message = $result === 'success' ? 'Buku berhasil ditambahkan' : $result;
             }else if(isset($_POST['category_name'])){
                 $result = $dashboard->addCategory($_POST['category_name']);
                 $message = $result === 'success' ? 'category berhasil ditambahkan ' : $result;

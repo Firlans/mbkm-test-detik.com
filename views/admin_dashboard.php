@@ -44,21 +44,21 @@
     </nav>
 
     <main class="main-content">
+        <?php if (isset($message)): ?>
+            <p class='message'><?= $message ?></p>
+        <?php endif ?>
         <section id="books" class="card">
             <div class="header">
                 <h2>Book Management</h2>
                 <button class="add-btn" data-modal="bookModal">Add New Book</button>
             </div>
-            <?php if (isset($message)): ?>
-                <p class='message'><?= $message ?></p>
-            <?php endif ?>
             <div class="book-list">
                 <?php if (isset($books)): ?>
                     <?php foreach ($books as $book): ?>
                         <div class="book-item">
                             <img src="<?= $book['cover_image'] ?>" alt="Cover">
                             <h3><?= $book['title'] ?></h3>
-                            <p><?= $book['category_name'] ?></p>
+                            <p><?= $book['name'] ?></p>
                             <button class="edit-btn" data-modal="editBookModal" data-id="<?= $book['id'] ?>">Edit</button>
                             <button class="delete-btn" data-modal="deleteBookModal" data-id="<?= $book['id'] ?>">Delete</button>
                         </div>
@@ -85,7 +85,7 @@
                     <?php if (isset($categories)): ?>
                         <?php foreach ($categories as $category): ?>
                             <tr>
-                                <td><?= $category['category_name'] ?></td>
+                                <td><?= $category['name'] ?></td>
                                 <td><?= $category['created_at'] ?></td>
                                 <td><?= $category['updated_at'] ?></td>
                                 <td>
@@ -154,7 +154,7 @@
                         <select id="book_category" name="book_category" required>
                             <?php if (isset($categories)): ?>
                                 <?php foreach ($categories as $category): ?>
-                                    <option value="<?= $category['id'] ?>"><?= $category['category_name'] ?></option>
+                                    <option value="<?= $category['id'] ?>"><?= $category['name'] ?></option>
                                 <?php endforeach ?>
                             <?php endif ?>
                         </select>
