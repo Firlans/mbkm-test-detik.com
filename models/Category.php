@@ -15,8 +15,12 @@ class Category{
         return $categories;
     }
     public function getCategoryByName($category_name){
-        $sql = 'SELECT * FROM categories WHERE category_name = ?';
+        $sql = 'SELECT * FROM categories WHERE name = ?';
         $statement = $this->conn->prepare($sql);
+        if(!$statement){
+            echo $this->conn->error;
+            return false;
+        }
         $statement->bind_param('s', $category_name);
         $statement->execute();
         $result = $statement->get_result();
@@ -26,7 +30,7 @@ class Category{
     }
 
     public function createCategory($category_name){
-        $sql = 'INSERT INTO categories (category_name) values (?)';
+        $sql = 'INSERT INTO categories (name) values (?)';
         $statement = $this->conn->prepare($sql);
         $statement->bind_param('s', $category_name);
         $result = $statement->execute();

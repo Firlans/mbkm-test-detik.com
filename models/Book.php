@@ -7,6 +7,16 @@ class Book{
         $this->conn = $conn;
     }
 
+    public function getBookById($id){
+        $sql = "SELECT * FROM books WHERE id = ?";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bindParam("s", $id);
+        $stmt->execute();
+        $result = $stmt->fetch(FETCH_ASSOC);
+        $stmt->close();
+        return $result;
+    }
+
     public function getBooks(){
         $sql = 'SELECT * FROM books';
         $result = $this->conn->query($sql);

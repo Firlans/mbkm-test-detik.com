@@ -39,7 +39,12 @@ class DashboardController{
     }
 
     public function addBook($title, $category_id, $description, $file, $cover_image, $user_id){
+        if(!$title || !$category_id || !$description || !$file || !$cover_image || !$user_id){
+            return 'semua field wajin diisi';
+        }
+
         
+
         $this->bookModel->createBook($title, $category_id, $description, $file, $cover_image, $user_id);
     }   
 
