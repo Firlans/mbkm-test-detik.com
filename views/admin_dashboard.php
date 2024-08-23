@@ -17,7 +17,7 @@
         </div>
         <ul class="nav-list">
             <li class="nav-item">
-                <a href="#books" class="nav-link active">
+                <a href="#books" class="nav-link">
                     <i class="fas fa-book"></i>
                     <span>Manage Books</span>
                 </a>
@@ -56,9 +56,9 @@
                 <?php if (isset($books)): ?>
                     <?php foreach ($books as $book): ?>
                         <div class="book-item">
-                            <img src="<?= $book['cover_image'] ?>" alt="Cover">
+                            <img src="<?= $book['cover_image_path'] ?>" alt="Cover">
                             <h3><?= $book['title'] ?></h3>
-                            <p><?= $book['name'] ?></p>
+                            <p><?= $book['description'] ?></p>
                             <button class="edit-btn" data-modal="editBookModal" data-id="<?= $book['id'] ?>">Edit</button>
                             <button class="delete-btn" data-modal="deleteBookModal" data-id="<?= $book['id'] ?>">Delete</button>
                         </div>
@@ -217,6 +217,48 @@
                         </select>
                     </div>
                     <button type="submit" class="submit-btn">Add User</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Delete Book Modal -->
+        <div id="deleteBookModal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h2>Delete Book</h2>
+                <p>Are you sure you want to delete this book? This action cannot be undone.</p>
+                <form id="deleteBookForm" action="/dashboard" method="post">
+                    <input type="hidden" id="delete_book_id" name="delete_book_id">
+                    <button type="submit" class="delete-btn">Delete Book</button>
+                    <button type="button" class="cancel-btn" onclick="closeModal('deleteBookModal')">Cancel</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Delete Category Modal -->
+        <div id="deleteCategoryModal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h2>Delete Category</h2>
+                <p>Are you sure you want to delete this category? This action cannot be undone.</p>
+                <form id="deleteCategoryForm" action="/dashboard" method="post">
+                    <input type="hidden" id="delete_category_id" name="delete_category_id">
+                    <button type="submit" class="delete-btn">Delete Category</button>
+                    <button type="button" class="cancel-btn" onclick="closeModal('deleteCategoryModal')">Cancel</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Delete User Modal -->
+        <div id="deleteUserModal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h2>Delete User</h2>
+                <p>Are you sure you want to delete this user? This action cannot be undone.</p>
+                <form id="deleteUserForm" action="/dashboard" method="post">
+                    <input type="hidden" id="delete_user_id" name="delete_user_id">
+                    <button type="submit" class="delete-btn">Delete User</button>
+                    <button type="button" class="cancel-btn" onclick="closeModal('deleteUserModal')">Cancel</button>
                 </form>
             </div>
         </div>

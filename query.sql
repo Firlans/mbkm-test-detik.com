@@ -42,7 +42,7 @@ CREATE TABLE
 INSERT INTO
     users (email, username, password, role)
 VALUES
-    ('admin@example.com', 'Admin', 'admin123', 'admin'),
+    ('admin@gmail.com', 'Admin', 'admin', 'admin'),
     ('user@example.com', 'User', 'user123', 'user');
 
 INSERT INTO

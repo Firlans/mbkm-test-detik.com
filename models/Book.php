@@ -11,11 +11,11 @@ class Book
     public function getBookById($id)
     {
         $sql = "SELECT * FROM books WHERE id = ?";
-        $stmt = $this->conn->prepare($sql);
-        $stmt->bindParam("s", $id);
-        $stmt->execute();
-        $result = $stmt->fetch(FETCH_ASSOC);
-        $stmt->close();
+        $statement = $this->conn->prepare($sql);
+        $statement->bindParam("s", $id);
+        $statement->execute();
+        $result = $statement->fetch(FETCH_ASSOC);
+        $statement->close();
         return $result;
     }
 
@@ -33,7 +33,7 @@ class Book
         $sql = 'INSERT INTO books (title, category_id, description, file_path, cover_image_path, user_id) VALUES (?,?,?,?,?,?)';
         $statement = $this->conn->prepare($sql);
         $statement->bind_param('ssssss', $title, $category_id, $description, $file_path, $cover_image, $user_id);
-        $result = $statement->execute;
+        $result = $statement->execute();
         $statement->close();
         return $result;
     }

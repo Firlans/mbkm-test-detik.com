@@ -43,15 +43,14 @@ class DashboardController{
             return 'semua field wajib diisi';
         }
         
-        $idSaveBook = $this->bookModel->saveBook($file, $cover_image);
-        if($idSaveBook !== 'success'){
-            return $idSaveBook;
+        $isSaveBook = $this->bookModel->saveBook($file, $cover_image);
+        if($isSaveBook !== 'success'){
+            return $isSaveBook;
         }
-
-        $file_path = 'uploads/pdf/'.$file['name'];
-        $cover_path = 'uploads/pdf/'.$cover_image['name'];
-
-
+        
+        $file_path = 'uploads/files/'.$file['name'];
+        $cover_path = 'uploads/covers/'.$cover_image['name'];
+        
         if(!$this->bookModel->createBook($title, $category_id, $description, $file_path, $cover_path, $user_id)){
             return 'terjadi kesalahan, silahkan coba lagi nanti';
         }
