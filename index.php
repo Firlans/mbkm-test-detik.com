@@ -46,14 +46,49 @@ switch ($parts[0]) {
         $categories = $dashboard->categoriesList();
         $books = $dashboard->booksList();
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            if (isset($_POST['book_title'])) {
-                $result = $dashboard->addBook($_POST['book_title'], $_POST['book_category'], $_POST['book_description'], $_FILES['book_file'], $_FILES['book_cover'], $_SESSION['user_id']);
-                $message = $result === 'success' ? 'Buku berhasil ditambahkan' : $result;
-                $books = $dashboard->booksList();
-            } else if (isset($_POST['category_name'])) {
-                $result = $dashboard->addCategory($_POST['category_name']);
-                $message = $result === 'success' ? 'category berhasil ditambahkan ' : $result;
-                $categories = $dashboard->categoriesList();
+            $message = $_POST['action'];
+            switch ($_POST['action']) {
+                case 'add_book':
+                    $result = $dashboard->addBook($_POST['book_title'], $_POST['book_category'], $_POST['book_description'], $_FILES['book_file'], $_FILES['book_cover'], $_SESSION['user_id']);
+                    $message = $result === 'success' ? 'Buku berhasil ditambahkan' : $result;
+                    $books = $dashboard->booksList();
+                    break;
+
+                case 'add_category':
+                    $result = $dashboard->addCategory($_POST['category_name']);
+                    $message = $result === 'success' ? 'category berhasil ditambahkan ' : $result;
+                    $categories = $dashboard->categoriesList();
+                    break;
+                case 'add_user':
+                    $result = $dashboard->addUser($_POST['email'], $_POST['username'], $_POST['password'], $_POST['role']);
+                    $message = $result === 'success' ? 'user berhasil ditambahkan ' : $result;
+                    $users = $dashboard->usersList();
+                    break;
+
+                case 'delete_category':
+                    $result = $dashboard->deleteCategory($_POST['delete_item_id']);
+                    $message = $result === 'success' ? 'category berhasil dihapus' : $result;
+                    $categories = $dashboard->categoriesList();
+                    break;
+
+                case 'delete_book':
+                    break;
+
+                case 'delete_user':
+                    break;
+
+                case 'edit_book':
+                    break;
+
+                case 'edit_category':
+                    break;
+
+                case 'edit_user':
+                    break;
+
+                default:
+                    # code...
+                    break;
             }
         }
 
