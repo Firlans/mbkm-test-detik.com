@@ -5,8 +5,6 @@ require_once 'models/Book.php';
 
 class DashboardController
 {
-class DashboardController
-{
     private $conn;
     private $userModel;
     private $categoryModel;
@@ -19,8 +17,6 @@ class DashboardController
         $this->bookModel = new Book($conn);
     }
 
-    public function is_admin($userId)
-    {
     public function is_admin($userId)
     {
         $user = $this->userModel->getUserById($userId);
@@ -51,7 +47,8 @@ class DashboardController
             return 'semua field wajib diisi';
         }
 
-        $this->saveBook($file, $cover_image);
+        $this->saveFile($file, "files");
+        $this->saveFile($file, "covers");
 
         $file_path = 'uploads/files/' . $file['name'];
         $cover_path = 'uploads/covers/' . $cover_image['name'];
@@ -264,8 +261,6 @@ class DashboardController
         return $categories;
     }
 
-    public function booksList()
-    {
     public function booksList()
     {
         $books = $this->bookModel->getBooks();

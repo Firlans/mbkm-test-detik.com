@@ -101,14 +101,4 @@ class Category
         $statement->close();
         return $result;
     }
-
-    public function deleteCategory($id)
-    {
-        $sql = 'DELETE FROM categories WHERE id = ?';
-        $statement = $this->conn->prepare($sql);
-        $statement->bind_param('s', $id);
-        $result = $statement->execute();
-        $statement->close();
-        return $result;
-    }
 }
