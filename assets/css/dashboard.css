@@ -14,6 +14,7 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  scroll-behavior: smooth;
 }
 
 body {
@@ -268,6 +269,42 @@ tr:last-child td {
   border: 1px solid #ddd;
   border-radius: 0.25rem;
   font-size: 1rem;
+}
+
+.form-group label[for="keep_file"],
+.form-group label[for="keep_cover"] {
+  display: inline;
+  margin-left: 0.5rem;
+  font-weight: normal;
+}
+
+#current_file,
+#current_cover {
+  display: block;
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+  color: var(--primary-color);
+  font-style: italic;
+}
+
+.form-group input[type="checkbox"] {
+  width: auto;
+  margin-right: 0.5rem;
+}
+
+.file-input-wrapper {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.file-input-wrapper input[type="file"] {
+  flex-grow: 1;
+}
+
+.file-input-wrapper+.checkbox-wrapper {
+  display: flex;
+  align-items: center;
 }
 
 @media (max-width: 768px) {

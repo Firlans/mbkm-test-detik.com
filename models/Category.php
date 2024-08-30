@@ -76,6 +76,22 @@ class Category
         return $result;
     }
 
+    public function updateCategory($category_id, $category_name){
+        $sql = "
+            UPDATE categories
+            SET name=?
+            WHERE id=?;
+        ";
+        $statement = $this->conn->prepare($sql);
+        $statement->bind_param("ss", $category_name, $category_id);
+        $result = $statement->execute();
+        if (!$result) {
+            return $this->conn->error();
+        }
+        $statement->close();
+        return $result;
+    }
+
     public function createCategory($category_name)
     {
         $sql = 'INSERT INTO categories (name) values (?)';

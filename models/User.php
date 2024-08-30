@@ -69,6 +69,28 @@ class User
         return $result;
     }
 
+    public function updateUser($id, $username, $email, $password, $role)
+    {
+        $sql = '
+            UPDATE users
+            SET
+                email = ?,
+                username = ?,
+                password = ?,
+                role = ?
+            WHERE
+                id = ?;
+        ';
+        $statement = $this->conn->prepare($sql);
+        if ($statement === false) {
+            return false;
+        }
+        $statement->bind_param('sssss', $email, $username , $password, $role, $id);
+        $result = $statement->execute();
+        $statement->close();
+        return $result;
+    }
+    
     public function createUser($username, $email, $password, $role)
     {
         $sql = 'INSERT INTO users (username, email, password, role) VALUES(?,?,?,?)';

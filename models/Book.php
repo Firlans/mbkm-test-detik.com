@@ -12,9 +12,23 @@ class Book
     {
         $sql = "SELECT * FROM books WHERE id = ?";
         $statement = $this->conn->prepare($sql);
-        $statement->bindParam("s", $id);
+        $statement->bind_param("s", $id);
         $statement->execute();
-        $result = $statement->fetch(MYSQLI_ASSOC);
+        if (!$statement) {
+            return $this->conn->error;
+        }
+        $result = $statement->get_result();
+        $book = $result->fetch_assoc();
+        $statement->close();
+        return $book;
+    }
+
+    public function deleteBook($id)
+    {
+        $sql = 'DELETE FROM books WHERE id = ?';
+        $statement = $this->conn->prepare($sql);
+        $statement->bind_param('s', $id);
+        $result = $statement->execute();
         $statement->close();
         return $result;
     }
@@ -52,6 +66,31 @@ class Book
         return $books;
     }
 
+    public function updateBook($id, $title, $category_id, $description, $file_path, $cover_image, $user_id)
+    {
+        $sql = "
+            UPDATE books
+            SET
+                title = ?,
+                category_id = ?,
+                description = ?,
+                file_path = ?,
+                cover_image_path = ?,
+                user_id = ?
+            WHERE
+                id = ?
+        ";
+        $statement = $this->conn->prepare($sql);
+        if (!$statement) {
+            echo $this->conn->error;
+            return false;
+        }
+        $statement->bind_param('ssssssi', $title, $category_id, $description, $file_path, $cover_image, $user_id, $id);
+        $result = $statement->execute();
+        $statement->close();
+        return $result;
+    }
+
     public function createBook($title, $category_id, $description, $file_path, $cover_image, $user_id)
     {
         $sql = 'INSERT INTO books (title, category_id, description, file_path, cover_image_path, user_id) VALUES (?,?,?,?,?,?)';
@@ -60,37 +99,5 @@ class Book
         $result = $statement->execute();
         $statement->close();
         return $result;
-    }
-
-    public function saveBook($book_file, $book_cover)
-    {
-        $targetDirPDF = 'uploads/files/';
-        $targetDirCover = 'uploads/covers/';
-        $targetFile = $targetDirPDF . basename($book_file["name"]);
-        $targetCover = $targetDirCover . basename($book_cover["name"]);
-
-        // Mendapatkan tipe file (opsional, jika ingin melakukan validasi)
-        $fileType = strtolower(pathinfo($targetFile, PATHINFO_EXTENSION));
-        $coverType = strtolower(pathinfo($targetCover, PATHINFO_EXTENSION));
-
-        if($fileType !== 'pdf'){
-            return 'file harus berekstensi pdf';
-        }
-
-        if($coverType !== 'jpeg'){
-            return 'cover harus berekstensi jpeg';
-        }
-
-        // Cek apakah file sudah ada
-        if (file_exists($targetFile)) {
-            return "Maaf, file sudah ada.";
-        } else {
-            // Pindahkan file dari temporary ke folder tujuan
-            if (move_uploaded_file($book_file["tmp_name"], $targetFile) && move_uploaded_file($book_cover["tmp_name"], $targetCover)) {
-                return 'success';
-            } else {
-                return "Maaf, terjadi kesalahan saat mengunggah file.";
-            }
-        }
     }
 }
