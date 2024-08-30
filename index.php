@@ -13,6 +13,9 @@ switch ($parts[0]) {
         if (isset($_SESSION['user_id'])) {
             header('Location: /dashboard');
         }
+        if (isset($_SESSION['user_id'])) {
+            header('Location: /dashboard');
+        }
         require __DIR__ . '/controllers/LoginController.php';
         $login = new LoginController($conn);
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -30,7 +33,7 @@ switch ($parts[0]) {
         $register = new RegisterController($conn);
         if ($_SERVER['REQUEST_METHOD'] === "POST") {
             $result = $register->register($_POST['username'], $_POST['email'], $_POST['password'], $_POST['confirm_password']);
-            $message = $result === 'sukses' ?  'registrasi berhasil, silakan login' : $result;
+            $message = $result === 'sukses' ? 'registrasi berhasil, silakan login' : $result;
         }
         require __DIR__ . '/views/register.php';
         break;
@@ -46,60 +49,73 @@ switch ($parts[0]) {
         $categories = $dashboard->categoriesList();
         $books = $dashboard->booksList();
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            if (isset($_POST['book_title'])) {
-                $result = $dashboard->addBook($_POST['book_title'], $_POST['book_category'], $_POST['book_description'], $_FILES['book_file'], $_FILES['book_cover'], $_SESSION['user_id']);
-                if ($result === 'success') {
-                    $message = 'berhasil di tambahkan';
+            switch ($_POST['action']) {
+                case 'add_book':
+                    $result = $dashboard->addBook($_POST['title'], $_POST['category'], $_POST['description'], $_FILES['filePath'], $_FILES['coverImagePath'], $_SESSION['user_id']);
+                    $message = $result === 'success' ? 'Buku berhasil ditambahkan' : $result;
                     $books = $dashboard->booksList();
-                } else {
-                    $error = $result;
-                }
-            }
-            if (isset($_POST['category_name'])) {
-                $result = $dashboard->addCategory($_POST['category_name']);
-                if ($result === 'success') {
-                    $message = 'category berhasil ditambahkan ';
-                    $categories = $dashboard->categoriesList();
-                } else {
-                    $error = $result;
-                }
-            }
-            if (isset($_POST['user_name'])) {
-                $result = $dashboard->addUser($_POST['user_name'], $_POST['user_email'], $_POST['user_password'], $_POST['user_role']);
-                if ($result === 'success') {
-                    $message = 'user berhasil ditambahkan ';
-                    $users = $dashboard->usersList();
-                } else {
-                    $error = $result;
-                }
-            }
+                    break;
 
-            if (isset($_POST['delete_user_id'])){
-                $result = $dashboard->deleteUser($_POST['delete_user_id']);
-                if ($result === 'success') {
-                    $message = 'user berhasil terhapus ';
-                    $users = $dashboard->usersList();
-                } else {
-                    $error = $result;
-                }
-            }
-            if (isset($_POST['delete_book_id'])){
-                $result = $dashboard->deleteBook($_POST['delete_book_id']);
-                if ($result === 'success') {
-                    $message = 'user berhasil terhapus ';
-                    $books = $dashboard->booksList();
-                } else {
-                    $error = $result;
-                }
-            }
-            if (isset($_POST['delete_category_id'])){
-                $result = $dashboard->deleteCategory($_POST['delete_category_id']);
-                if ($result === 'success') {
-                    $message = 'user berhasil terhapus ';
+                case 'add_category':
+                    $result = $dashboard->addCategory($_POST['categoryName']);
+                    $message = $result === 'success' ? 'category berhasil ditambahkan ' : $result;
                     $categories = $dashboard->categoriesList();
-                } else {
-                    $error = $result;
-                }
+                    break;
+                case 'add_user':
+                    $result = $dashboard->addUser($_POST['email'], $_POST['username'], $_POST['password'], $_POST['role']);
+                    $message = $result === 'success' ? 'user berhasil ditambahkan ' : $result;
+                    $users = $dashboard->usersList();
+                    break;
+
+                case 'delete_category':
+                    $result = $dashboard->deleteCategory($_POST['delete_item_id']);
+                    $message = $result === 'success' ? 'category berhasil dihapus' : $result;
+                    $categories = $dashboard->categoriesList();
+                    break;
+
+                case 'delete_book':
+                    $result = $dashboard->deleteBook($_POST['delete_item_id']);
+                    $message = $result === 'success' ? 'Book berhasil dihapus' : $result;
+                    $books = $dashboard->booksList();
+                    break;
+
+                case 'delete_user':
+                    $result = $dashboard->deleteUser($_POST['delete_item_id']);
+                    $message = $result === 'success' ? 'user berhasil dihapus' : $result;
+                    $users = $dashboard->usersList();
+                    break;
+
+                case 'edit_book':
+                    $result = $dashboard->editBook(
+                        $_POST['id'],
+                        $_POST['title'],
+                        $_POST['category'],
+                        $_POST['description'],
+                        $_FILES['filePath'] ? $_FILES['filePath'] : null,
+                        $_FILES['coverImagePath'] ? $_FILES['coverImagePath'] : null,
+                        $_POST['keep_file'] ? $_POST['keep_file'] : '0',
+                        $_POST['keep_cover'] ? $_POST['keep_cover'] : '0',
+                        $_SESSION['user_id']
+                    );
+                    $message = $result === 'success' ? 'Buku berhasil diubah' : $result;
+                    $books = $dashboard->booksList();
+                    break;
+
+                case 'edit_category':
+                    $result = $dashboard->editCategory($_POST['id'], $_POST['categoryName']);
+                    $message = $result === 'success' ? 'category berhasil diubah ' : $result;
+                    $categories = $dashboard->categoriesList();
+                    break;
+
+                case 'edit_user':
+                    $result = $dashboard->editUser($_POST['id'], $_POST['email'], $_POST['username'], $_POST['password'], $_POST['role']);
+                    $message = $result === 'success' ? 'user berhasil diubah ' : $result;
+                    $users = $dashboard->usersList();
+                    break;
+
+                default:
+                    # code...
+                    break;
             }
         }
 

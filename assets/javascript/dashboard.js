@@ -1,77 +1,70 @@
-document.addEventListener('DOMContentLoaded', function () {
-    const modals = document.querySelectorAll('.modal');
-    const addButtons = document.querySelectorAll('.add-btn');
-    const editButtons = document.querySelectorAll('.edit-btn');
-    const deleteButtons = document.querySelectorAll('.delete-btn');
-    const closeBtns = document.querySelectorAll('.close');
-    const cancelBtns = document.querySelectorAll('.cancel-btn');
+document.addEventListener("DOMContentLoaded", function () {
+  const modals = document.querySelectorAll(".modal");
+  const openButtons = document.querySelectorAll(
+    ".add-btn, .edit-btn, .delete-btn"
+  );
+  const closeButtons = document.querySelectorAll(".close, .cancel-btn");
 
-    function openModal(modalId) {
-        document.getElementById(modalId).style.display = 'block';
-    }
+  openButtons.forEach((button) => {
+    button.addEventListener("click", function () {
+      const modalAction = this.dataset.action;
+      const modalType = this.dataset.type;
+      const modal = modalAction
+        ? document.getElementById(`${modalAction}Modal`)
+        : document.getElementById(`${modalType}Modal`);
+      console.log(modal);
+      modal.style.display = "block";
 
-    function closeModal(modal) {
-        modal.style.display = 'none';
-    }
-
-    addButtons.forEach(btn => {
-        btn.addEventListener('click', () => openModal(btn.dataset.modal));
-    });
-
-    editButtons.forEach(btn => {
-        btn.addEventListener('click', () => {
-            openModal(btn.dataset.modal);
-            // Here you would typically fetch the data for the item being edited
-            // and populate the form fields
-        });
-    });
-
-    deleteButtons.forEach(btn => {
-        btn.addEventListener('click', () => {
-            openModal(btn.dataset.modal);
-            document.getElementById(`${btn.dataset.modal.replace('delete', '').replace('Modal', '').toLowerCase()}_id`).value = btn.dataset.id;
-            const confirmDeleteBtn = document.getElementById(`confirmDelete${btn.dataset.modal.replace('delete', '').replace('Modal', '')}`);
-            confirmDeleteBtn.dataset.id = btn.dataset.id;
-        });
-    });
-
-    closeBtns.forEach(btn => {
-        btn.addEventListener('click', () => closeModal(btn.closest('.modal')));
-    });
-
-    cancelBtns.forEach(btn => {
-        btn.addEventListener('click', () => closeModal(btn.closest('.modal')));
-    });
-
-    window.addEventListener('click', (event) => {
-        modals.forEach(modal => {
-            if (event.target == modal) {
-                closeModal(modal);
+      const form = modal.querySelector("form");
+      form.reset();
+      // Populate form fields for edit actions
+      if (this.classList.contains("edit-btn")) {
+        const bookFilePath = this.getAttribute("data-file-path");
+        const bookCoverPath = this.getAttribute("data-image-path");
+        modal.querySelector("h2").innerText = `edit ${modalType}`;
+        modal.querySelector(".action").value = `edit_${modalType}`;
+        form.querySelector(".submit-btn").innerHTML = `edit ${modalType}`;
+        for (let key in this.dataset) {
+          const field = form.querySelector(`[name="${key}"]`);
+          if (field) {
+            if (key === "filePath" || key === "coverImagePath") {
+              field.textContent = this.dataset[key];
+            } else {
+              field.value = this.dataset[key];
             }
-        });
+          }
+        }
+        document.getElementById("current_file").textContent = bookFilePath
+          ? `Current file: ${bookFilePath.split("/").pop()}`
+          : "No file uploaded";
+        document.getElementById("current_cover").textContent = bookCoverPath
+          ? `Current cover: ${bookCoverPath.split("/").pop()}`
+          : "No cover uploaded";
+      }
+      if (this.classList.contains("add-btn")) {
+        modal.querySelector(".action").value = `add_${modalType}`;
+      }
+      // Set up delete form
+      if (this.classList.contains("delete-btn")) {
+        const deleteForm = document.getElementById("deleteForm");
+        deleteForm.querySelector(
+          "#delete_action"
+        ).value = `delete_${modalType}`;
+        deleteForm.querySelector("#delete_item_id").value = this.dataset.id;
+      }
     });
+  });
 
-    // // Handling form submissions
-    // const forms = document.querySelectorAll('form');
-    // forms.forEach(form => {
-    //     form.addEventListener('submit', (e) => {
-    //         // e.preventDefault();
-    //         // Here you would typically send the form data to the server
-    //         // and handle the response
-    //         // console.log('Form submitted:', form.id);
-    //         closeModal(form.closest('.modal'));
-    //     });
-    // });
-
-    // Handling delete confirmations
-    const confirmDeleteBtns = document.querySelectorAll('[id^="confirmDelete"]');
-    confirmDeleteBtns.forEach(btn => {
-        btn.addEventListener('click', () => {
-            const itemId = btn.dataset.id;
-            const itemType = btn.id.replace('confirmDelete', '');
-            // Here you would typically send a delete request to the server
-            console.log(`Deleting ${itemType} with id: ${itemId}`);
-            closeModal(btn.closest('.modal'));
-        });
+  closeButtons.forEach((button) => {
+    button.addEventListener("click", function () {
+      const modal = this.closest(".modal");
+      modal.style.display = "none";
     });
+  });
+
+  window.addEventListener("click", function (event) {
+    if (event.target.classList.contains("modal")) {
+      event.target.style.display = "none";
+    }
+  });
 });
