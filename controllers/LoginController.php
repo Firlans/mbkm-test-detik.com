@@ -12,7 +12,7 @@ class LoginController
         $this->userModel = new User($conn);
     }
 
-    public function login($email, $password,)
+    public function login($email, $password, )
     {
         if (!$email || !$password) {
             return "semua field wajib di isi";
@@ -35,8 +35,8 @@ class LoginController
     }
 
 
-
-    public function logout(){
+    public function logout()
+    {
         session_destroy();
     }
 }
