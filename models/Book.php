@@ -96,7 +96,7 @@ class Book
         $sql = 'INSERT INTO books (title, category_id, description, file_path, cover_image_path, user_id) VALUES (?,?,?,?,?,?)';
         $statement = $this->conn->prepare($sql);
         $statement->bind_param('ssssss', $title, $category_id, $description, $file_path, $cover_image, $user_id);
-        $result = $statement->execute;
+        $result = $statement->execute();
         $statement->close();
         return $result;
     }
