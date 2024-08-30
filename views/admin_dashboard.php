@@ -11,24 +11,6 @@
 </head>
 
 <body>
-    <div class="container">
-        <?php if (isset($message)) : ?>
-            <p class='message'><?= $message ?></p>
-        <?php elseif (isset($error)) : ?>
-            <p class='error'><?= $error ?></p>
-        <?php endif ?>
-
-        <header>
-            <h1>Digital Library Admin Dashboard</h1>
-            <nav>
-                <ul>
-                    <li><a href="#books">Manage Books</a></li>
-                    <li><a href="#categories">Manage Categories</a></li>
-                    <li><a href="#users">Manage Users</a></li>
-                    <li><a href="/logout">Logout</a></li>
-                </ul>
-            </nav>
-        </header>
     <nav class="sidebar">
         <div class="sidebar-header">
             <h1>Digital Library</h1>
@@ -63,158 +45,32 @@
 
     <main class="main-content">
         <?php if (isset($message)): ?>
-            <p class='message'><?= $message ?></p>
-        <?php endif ?>
+            <p class="message"><?= htmlspecialchars($message) ?></p>
+        <?php endif; ?>
+
         <section id="books" class="card">
             <div class="header">
                 <h2>Book Management</h2>
-                <button class="add-btn" data-modal="bookModal">Add New Book</button>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Title</th>
-                            <th>Category</th>
-                            <th>Description</th>
-                            <th>Cover Image</th>
-                            <th>File</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php if (isset($books)) : ?>
-                            <?php foreach ($books as $book) : ?>
-                                <tr>
-                                    <td><?= $book['title'] ?></td>
-                                    <td><?= $book['category_name'] ?></td>
-                                    <td><?= $book['description'] ?></td>
-                                    <td><img src="../<?= $book['cover_image'] ?>" alt="Cover" width="50"></td>
-                                    <td><a href="<?= $book['file_path'] ?>" target="_blank"> baca sekarang </a></td>
-                                    <td>
-                                        <button class="edit-btn" data-modal="editBookModal" data-id="<?= $book['id'] ?>">Edit</button>
-                                        <button class="delete-btn" data-modal="deleteBookModal" data-id="<?= $book['id'] ?>">Delete</button>
-                                    </td>
-                                </tr>
-                            <?php endforeach ?>
-                        <?php endif ?>
-                    </tbody>
-                </table>
-            </section>
-
-            <section id="categories">
-                <h2>Category Management</h2>
-                <button class="add-btn" data-modal="categoryModal">Add New Category</button>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Category Name</th>
-                            <th>Created At</th>
-                            <th>Updated At</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php if (isset($categories)) : ?>
-                            <?php foreach ($categories as $category) : ?>
-                                <tr>
-                                    <td><?= $category['category_name'] ?></td>
-                                    <td><?= $category['created_at'] ?></td>
-                                    <td><?= $category['updated_at'] ?></td>
-                                    <td>
-                                        <button class="edit-btn" data-modal="editCategoryModal" data-id="<?= $category['id'] ?>">Edit</button>
-                                        <button class="delete-btn" data-modal="deleteCategoryModal" data-id="<?= $category['id'] ?>">Delete</button>
-                                    </td>
-                                </tr>
-                            <?php endforeach ?>
-                        <?php endif ?>
-                    </tbody>
-                </table>
-            </section>
-
-            <section id="users">
-                <h2>User Management</h2>
-                <button class="add-btn" data-modal="userModal">Add New User</button>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Username</th>
-                            <th>Email</th>
-                            <th>Role</th>
-                            <th>Created At</th>
-                            <th>Updated At</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php if (isset($users)) : ?>
-                            <?php foreach ($users as $user) : ?>
-                                <tr>
-                                    <td><?= $user['username'] ?></td>
-                                    <td><?= $user['email'] ?></td>
-                                    <td><?= $user['role'] ?></td>
-                                    <td><?= $user['created_at'] ?></td>
-                                    <td><?= $user['updated_at'] ?></td>
-                                    <td>
-                                        <button class="edit-btn" data-modal="editUserModal" data-id="<?= $user['id'] ?>">Edit</button>
-                                        <button class="delete-btn" data-modal="deleteUserModal" data-id="<?= $user['id'] ?>">Delete</button>
-                                    </td>
-                                </tr>
-                            <?php endforeach ?>
-                        <?php endif ?>
-                    </tbody>
-                </table>
-            </section>
-
-            <!-- Modal forms -->
-            <div id="bookModal" class="modal">
-                <div class="modal-content">
-                    <span class="close">&times;</span>
-                    <h2>Add New Book</h2>
-                    <form id="addBookForm" action="/dashboard" method="post" enctype="multipart/form-data">
-                        <div class="form-group">
-                            <label for="book_title">Title: </label>
-                            <input type="text" id="book_title" name="book_title" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="book_category">Category:</label>
-                            <select id="book_category" name="book_category" required>
-                                <?php if (isset($categories)) : ?>
-                                    <?php foreach ($categories as $category) : ?>
-                                        <option value="<?= $category['id'] ?>"><?= $category['category_name'] ?></option>
-                                    <?php endforeach ?>
-                                <?php endif ?>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="book_description">Description:</label>
-                            <textarea id="book_description" name="book_description" required></textarea>
-                        </div>
-                        <div class="form-group">
-                            <label for="book_file">File:</label>
-                            <input type="file" id="book_file" name="book_file">
-                        </div>
-                        <div class="form-group">
-                            <label for="book_cover">Cover Image:</label>
-                            <input type="file" id="book_cover" name="book_cover">
-                        </div>
-                        <button type="submit" class="submit-btn">Add Book</button>
-                    </form>
-                </div>
                 <button class="add-btn" data-type="book">Add New Book</button>
             </div>
             <div class="book-list">
                 <?php if (isset($books)): ?>
                     <?php foreach ($books as $book): ?>
                         <div class="book-item">
-                            <img src="<?= $book['cover_image_path'] ?>" alt="Cover">
-                            <h3><?= $book['title'] ?></h3>
-                            <p><?= $book['description'] ?></p>
-                            <button class="edit-btn" data-type="book" data-id="<?= $book['id'] ?>"
-                                data-title="<?= $book['title'] ?>" data-category="<?= $book['category_id'] ?>"
-                                data-description="<?= $book['description'] ?>" data-image-path="<?= $book['cover_image_path'] ?>" data-file-path="<?= $book['file_path'] ?>">Edit</button>
-                            <button class="delete-btn" data-type="book" data-id="<?= $book['id'] ?>" data-action='delete'>Delete</button>
+                            <img src="<?= htmlspecialchars($book['cover_image_path']) ?>" alt="Cover">
+                            <h3><?= htmlspecialchars($book['title']) ?></h3>
+                            <p><?= htmlspecialchars($book['description']) ?></p>
+                            <button class="edit-btn" data-type="book" data-id="<?= htmlspecialchars($book['id']) ?>"
+                                data-title="<?= htmlspecialchars($book['title']) ?>"
+                                data-category="<?= htmlspecialchars($book['category_id']) ?>"
+                                data-description="<?= htmlspecialchars($book['description']) ?>"
+                                data-image-path="<?= htmlspecialchars($book['cover_image_path']) ?>"
+                                data-file-path="<?= htmlspecialchars($book['file_path']) ?>">Edit</button>
+                            <button class="delete-btn" data-type="book" data-id="<?= htmlspecialchars($book['id']) ?>"
+                                data-action="delete">Delete</button>
                         </div>
-                    <?php endforeach ?>
-                <?php endif ?>
+                    <?php endforeach; ?>
+                <?php endif; ?>
             </div>
         </section>
 
@@ -236,18 +92,19 @@
                     <?php if (isset($categories)): ?>
                         <?php foreach ($categories as $category): ?>
                             <tr>
-                                <td><?= $category['name'] ?></td>
-                                <td><?= $category['created_at'] ?></td>
-                                <td><?= $category['updated_at'] ?></td>
+                                <td><?= htmlspecialchars($category['name']) ?></td>
+                                <td><?= htmlspecialchars($category['created_at']) ?></td>
+                                <td><?= htmlspecialchars($category['updated_at']) ?></td>
                                 <td>
-                                    <button class="edit-btn" data-type="category" data-id="<?= $category['id'] ?>"
-                                        data-category-name="<?= $category['name'] ?>">Edit</button>
+                                    <button class="edit-btn" data-type="category"
+                                        data-id="<?= htmlspecialchars($category['id']) ?>"
+                                        data-category-name="<?= htmlspecialchars($category['name']) ?>">Edit</button>
                                     <button class="delete-btn" data-type="category"
-                                        data-id="<?= $category['id'] ?>" data-action='delete'>Delete</button>
+                                        data-id="<?= htmlspecialchars($category['id']) ?>" data-action="delete">Delete</button>
                                 </td>
                             </tr>
-                        <?php endforeach ?>
-                    <?php endif ?>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
                 </tbody>
             </table>
         </section>
@@ -272,25 +129,28 @@
                     <?php if (isset($users)): ?>
                         <?php foreach ($users as $user): ?>
                             <tr>
-                                <td><?= $user['username'] ?></td>
-                                <td><?= $user['email'] ?></td>
-                                <td><?= $user['role'] ?></td>
-                                <td><?= $user['created_at'] ?></td>
-                                <td><?= $user['updated_at'] ?></td>
+                                <td><?= htmlspecialchars($user['username']) ?></td>
+                                <td><?= htmlspecialchars($user['email']) ?></td>
+                                <td><?= htmlspecialchars($user['role']) ?></td>
+                                <td><?= htmlspecialchars($user['created_at']) ?></td>
+                                <td><?= htmlspecialchars($user['updated_at']) ?></td>
                                 <td>
-                                    <button class="edit-btn" data-type="user" data-id="<?= $user['id'] ?>"
-                                        data-username="<?= $user['username'] ?>" data-email="<?= $user['email'] ?>"
-                                        data-role="<?= $user['role'] ?>" data-password="<?= $user['password'] ?>">Edit</button>
-                                    <button class="delete-btn" data-type="user" data-id="<?= $user['id'] ?>" data-action='delete'>Delete</button>
+                                    <button class="edit-btn" data-type="user" data-id="<?= htmlspecialchars($user['id']) ?>"
+                                        data-username="<?= htmlspecialchars($user['username']) ?>"
+                                        data-email="<?= htmlspecialchars($user['email']) ?>"
+                                        data-role="<?= htmlspecialchars($user['role']) ?>"
+                                        data-password="<?= htmlspecialchars($user['password']) ?>">Edit</button>
+                                    <button class="delete-btn" data-type="user" data-id="<?= htmlspecialchars($user['id']) ?>"
+                                        data-action="delete">Delete</button>
                                 </td>
                             </tr>
-                        <?php endforeach ?>
-                    <?php endif ?>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
                 </tbody>
             </table>
         </section>
     </main>
-    
+
     <!-- Add Book Modal -->
     <div id="bookModal" class="modal">
         <div class="modal-content">
@@ -307,7 +167,8 @@
                     <label for="book_category">Category:</label>
                     <select id="book_category" name="category" required>
                         <?php foreach ($categories as $category): ?>
-                            <option value="<?= $category['id'] ?>"><?= $category['name'] ?></option>
+                            <option value="<?= htmlspecialchars($category['id']) ?>">
+                                <?= htmlspecialchars($category['name']) ?></option>
                         <?php endforeach; ?>
                     </select>
                 </div>
