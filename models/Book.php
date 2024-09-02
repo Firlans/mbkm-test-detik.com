@@ -35,7 +35,26 @@ class Book
 
     public function getBooks()
     {
-        $sql = 'SELECT * FROM books';
+        // $sql = 'SELECT * FROM books';
+        $sql = 'SELECT
+                    books.id,
+                    books.title,
+                    books.category_id,
+                    categories.name AS category,
+                    books.description,
+                    books.file_path,
+                    books.cover_image_path,
+                    books.user_id,
+                    users.username AS author,
+                    books.created_at,
+                    books.updated_at
+                FROM
+                    books
+                JOIN
+                    categories ON books.category_id = categories.id
+                LEFT JOIN
+                    users ON books.user_id = users.id;
+                    ';
         $result = $this->conn->query($sql);
 
         if ($result === false) {

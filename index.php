@@ -13,9 +13,6 @@ switch ($parts[0]) {
         if (isset($_SESSION['user_id'])) {
             header('Location: /dashboard');
         }
-        if (isset($_SESSION['user_id'])) {
-            header('Location: /dashboard');
-        }
         require __DIR__ . '/controllers/LoginController.php';
         $login = new LoginController($conn);
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -45,8 +42,12 @@ switch ($parts[0]) {
         $dashboard = new DashboardController($conn);
         $is_admin = $dashboard->is_admin($_SESSION['user_id']);
         $dashboard_page = $is_admin ? 'admin_dashboard.php' : 'user_dashboard.php';
-        $users = $dashboard->usersList();
-        $categories = $dashboard->categoriesList();
+        if ($dashboard_page === "admin_dashboard.php") {
+            $users = $dashboard->usersList();
+            $categories = $dashboard->categoriesList();
+        } else {
+            $borrowed = $dashboard->borrowedList($_SESSION["user_id"]);
+        }
         $books = $dashboard->booksList();
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             switch ($_POST['action']) {
@@ -112,7 +113,17 @@ switch ($parts[0]) {
                     $message = $result === 'success' ? 'user berhasil diubah ' : $result;
                     $users = $dashboard->usersList();
                     break;
+                case 'add_reading_list':
+                    $result = $dashboard->borrowBook($_SESSION["user_id"], $_POST['book_id']);
+                    $message = $result === 'success' ? "buku dipinjamkan" : $result;
+                    $borrowed = $dashboard->borrowedList($_SESSION['user_id']);
+                    break;
 
+                case 'return_book':
+                    $result = $dashboard->returnBook($_POST['borrow_id']);
+                    $message = $result === 'success' ? "buku telah di kembalikan" : $result;
+                    $borrowed = $dashboard->borrowedList($_SESSION['user_id']);
+                    break;
                 default:
                     # code...
                     break;
@@ -131,6 +142,5 @@ switch ($parts[0]) {
 
     default:
         require __DIR__ . '/views/404.php';
-        # code...
         break;
 }

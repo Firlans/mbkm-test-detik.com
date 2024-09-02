@@ -38,6 +38,25 @@ CREATE TABLE
         INDEX idx_user (user_id)
     );
 
+
+CREATE TABLE
+    borrowed (
+        id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+        book_id INT NOT NULL,
+        user_id INT NOT NULL,
+        borrow_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        due_date TIMESTAMP NOT NULL,
+        return_date TIMESTAMP NULL,
+        status ENUM('borrowed', 'returned', 'overdue') NOT NULL DEFAULT 'borrowed',
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+        CONSTRAINT fk_borrowed_book FOREIGN KEY (book_id) REFERENCES books (id) ON DELETE CASCADE ON UPDATE CASCADE,
+        CONSTRAINT fk_borrowed_user FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE,
+        INDEX idx_book (book_id),
+        INDEX idx_user (user_id),
+        INDEX idx_status (status)
+    );
+
 -- Contoh INSERT Data (Jika ingin menambahkan data)
 INSERT INTO
     users (email, username, password, role)

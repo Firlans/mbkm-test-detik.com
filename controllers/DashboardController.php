@@ -2,6 +2,7 @@
 require_once 'models/User.php';
 require_once 'models/Category.php';
 require_once 'models/Book.php';
+require_once 'models/Borrowed.php';
 
 class DashboardController
 {
@@ -9,12 +10,15 @@ class DashboardController
     private $userModel;
     private $categoryModel;
     private $bookModel;
+
+    private $borrowedModel;
     public function __construct($conn)
     {
         $this->conn = $conn;
         $this->userModel = new User($conn);
         $this->categoryModel = new Category($conn);
         $this->bookModel = new Book($conn);
+        $this->borrowedModel = new Borrowed($conn);
     }
 
     public function is_admin($userId)
@@ -48,7 +52,7 @@ class DashboardController
         }
 
         $this->saveFile($file, "files");
-        $this->saveFile($file, "covers");
+        $this->saveFile($cover_image, "covers");
 
         $file_path = 'uploads/files/' . $file['name'];
         $cover_path = 'uploads/covers/' . $cover_image['name'];
@@ -267,6 +271,51 @@ class DashboardController
         return $books;
     }
 
+    public function borrowedList($user_id)
+    {
+        $borrowed = $this->borrowedModel->getBorrows($user_id);
+        return $borrowed;
+    }
+
+    public function borrowBook($user_id, $book_id)
+    {
+        if (!$user_id || !$book_id) {
+            return "semua field wajib di isi";
+        }
+
+        $due = $this->timestamp();
+
+        $isAvailableBorrowed = $this->borrowedModel->getBorrowedByBookId($book_id);
+        if ($isAvailableBorrowed) {
+            return "buku telah ada di list pinjaman";
+        }
+
+        $isSaved = $this->borrowedModel->addBorrowed($user_id, $book_id, $due);
+        if (!$isSaved) {
+            return "gagal menambahkan buku";
+        }
+        return "success";
+    }
+
+    public function returnBook($borrowed_id)
+    {
+        if (!$borrowed_id) {
+            return "id wajib disertakan";
+        }
+
+        $isAvailableBorrowed = $this->borrowedModel->getBorrowedById($borrowed_id);
+        if (!$isAvailableBorrowed) {
+            return "buku tidak tersedia di list pinjaman";
+        }
+        $returnTime = $this->timestamp();
+        $isUpdated = $this->borrowedModel->updateStatus($borrowed_id, $returnTime,"returned");
+        if (!$isUpdated) {
+            return "gagal mengupdate data coba lagi nanti";
+        }
+
+        return "success";
+    }
+
     public function saveFile($file, $type)
     {
         $targetDir = 'uploads/' . $type . '/';
@@ -303,5 +352,12 @@ class DashboardController
         } else {
             return "File tidak ditemukan.";
         }
+    }
+
+    private function timestamp()
+    {
+        $currentDateTime = new DateTime();
+        $currentDateTime->modify('+7 days');
+        return $currentDateTime->format('Y-m-d H:i:s');
     }
 }
