@@ -47,6 +47,7 @@ switch ($parts[0]) {
             $categories = $dashboard->categoriesList();
         } else {
             $borrowed = $dashboard->borrowedList($_SESSION["user_id"]);
+            $user = $dashboard->getUser($_SESSION['user_id']);
         }
         $books = $dashboard->booksList();
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {

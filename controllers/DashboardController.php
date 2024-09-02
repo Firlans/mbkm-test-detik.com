@@ -27,6 +27,15 @@ class DashboardController
         return $user['role'] === 'admin';
     }
 
+    public function getUser($userId)
+    {
+        $user = $this->userModel->getUserById($userId);
+        if(!$user){
+            return "user tidak ditemukan";
+        }
+        return $user;
+    }
+
     public function addCategory($category_name)
     {
         if (!$category_name) {
@@ -308,7 +317,7 @@ class DashboardController
             return "buku tidak tersedia di list pinjaman";
         }
         $returnTime = $this->timestamp();
-        $isUpdated = $this->borrowedModel->updateStatus($borrowed_id, $returnTime,"returned");
+        $isUpdated = $this->borrowedModel->updateStatus($borrowed_id, $returnTime, "returned");
         if (!$isUpdated) {
             return "gagal mengupdate data coba lagi nanti";
         }

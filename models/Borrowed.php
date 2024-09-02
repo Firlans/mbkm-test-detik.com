@@ -54,17 +54,24 @@ class Borrowed
                 bk.id AS book_id,
                 bk.title,
                 bk.cover_image_path,
-                b.due_date
+                b.status,
+                b.due_date,
+                b.borrow_date,
+                b.return_date
             FROM 
                 borrowed b
             JOIN 
                 books bk ON b.book_id = bk.id
             WHERE 
-                b.user_id = ? AND b.status = 'borrowed'
+                b.user_id = ?
             ORDER BY 
                 b.due_date ASC
         ";
         $statement = $this->conn->prepare($sql);
+        if(!$statement){
+            var_dump($this->conn->error);
+            return false;
+        }
         $statement->bind_param("s", $id);
         $result = $statement->execute();
         $result = $statement->get_result();

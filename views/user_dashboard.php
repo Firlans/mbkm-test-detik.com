@@ -85,16 +85,18 @@
             <div class="book-list">
                 <?php if (isset($borrowed)): ?>
                     <?php foreach ($borrowed as $book): ?>
-                        <div class="book-item">
-                            <img src="<?= htmlspecialchars($book['cover_image_path']) ?>" alt="Cover">
-                            <h3><?= htmlspecialchars($book['title']) ?></h3>
-                            <p>Due date: <?= htmlspecialchars($book['due_date']) ?></p>
-                            <form action="/dashboard" method="post">
-                                <input type="hidden" name="action"  value="return_book">
-                                <input type="hidden" name="borrow_id" value="<?= htmlspecialchars($book['borrow_id']) ?>">
-                                <button type="submit" class="return-btn">Return</button>
-                            </form>
-                        </div>
+                        <?php if ($book['status'] === 'borrowed'): ?>
+                            <div class="book-item">
+                                <img src="<?= htmlspecialchars($book['cover_image_path']) ?>" alt="Cover">
+                                <h3><?= htmlspecialchars($book['title']) ?></h3>
+                                <p>Due date: <?= htmlspecialchars($book['due_date']) ?></p>
+                                <form action="/dashboard" method="post">
+                                    <input type="hidden" name="action" value="return_book">
+                                    <input type="hidden" name="borrow_id" value="<?= htmlspecialchars($book['borrow_id']) ?>">
+                                    <button type="submit" class="return-btn">Return</button>
+                                </form>
+                            </div>
+                        <?php endif ?>
                     <?php endforeach; ?>
                 <?php endif; ?>
             </div>
@@ -113,12 +115,12 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <?php if (isset($reading_history)): ?>
-                        <?php foreach ($reading_history as $entry): ?>
+                    <?php if (isset($borrowed)): ?>
+                        <?php foreach ($borrowed as $entry): ?>
                             <tr>
                                 <td><?= htmlspecialchars($entry['title']) ?></td>
                                 <td><?= htmlspecialchars($entry['borrow_date']) ?></td>
-                                <td><?= htmlspecialchars($entry['return_date']) ?></td>
+                                <td><?= $entry['return_date'] ?  htmlspecialchars($entry['return_date']) : "belum dikembalikan"?></td>
                             </tr>
                         <?php endforeach; ?>
                     <?php endif; ?>
